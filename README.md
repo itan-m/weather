@@ -5,7 +5,7 @@
 ## 安装
 
 ```shell
-$ composer require itan/weather -vvv
+$ composer require itan/weather:dev-master
 ```
 
 ## 使用

@@ -33,22 +33,55 @@ class Weather
     }
 
     /**
+     * 实时天气
+     * @param $city
+     * @param string $format
+     * @return mixed|string
+     * @throws HttpException
+     * @throws InvalidArgumentException
+     * @author a_he
+     */
+    public function getLiveWeather($city, $format = 'json')
+    {
+        return $this->getWeather($city, 'base', $format);
+    }
+
+    /**
+     * 天气预报
+     * @param $city
+     * @param string $format
+     * @return mixed|string
+     * @throws HttpException
+     * @throws InvalidArgumentException
+     * @author a_he
+     */
+    public function getForecastsWeather($city, $format = 'json')
+    {
+        return $this->getWeather($city, 'all', $format);
+    }
+
+    /**
      * @param string $city 输入城市的adcode，adcode信息可参考 https://lbs.amap.com/api/webservice/download
-     * @param string $type 可选值：base/all base:返回实况天气 all:返回预报天气
+     * @param string $type 可选值：live/forecast live:代表实时天气 forecast:代表天气预报
      * @param string $format 可选值：JSON,XML
      * @return mixed|string
      * @throws HttpException
      * @throws InvalidArgumentException
      * @author a_he
      */
-    public function getWeather($city, string $type = 'base', string $format = 'JSON')
+    public function getWeather($city, string $type = 'live', string $format = 'JSON')
     {
         if (!in_array(strtolower($format), ['xml', 'json'])) {
             throw new InvalidArgumentException('Invalid response format: ' . $format);
         }
 
-        if (!in_array(strtolower($type), ['base', 'all'])) {
-            throw new InvalidArgumentException('Invalid type value(base/all): ' . $type);
+        $types = [
+            'live' => 'base',
+            'forecast' => 'all',
+        ];
+
+        if (!array_key_exists(strtolower($type), $types)) {
+            throw new InvalidArgumentException('Invalid type value(live/forecast): ' . $type);
         }
 
         $url = 'https://restapi.amap.com/v3/weather/weatherInfo';
